@@ -1,0 +1,14 @@
+erDiagram
+  users ||--o{ audit_logs : performs
+  cloud_resources ||--o{ cloud_usage : measured_by
+  cloud_resources ||--o{ cloud_costs : billed_as
+  cloud_resources ||--o{ anomalies : flagged_for
+  cloud_resources ||--o{ recommendations : proposed_for
+  recommendations ||--o{ optimization_simulations : simulated_as
+  cloud_resources ||--o{ optimization_simulations : evaluated_for
+  optimization_simulations ||--o{ savings : realizes
+  cloud_resources { bigint id PK text provider text resource_id UK }
+  cloud_usage { bigint id PK bigint resource_fk FK timestamptz observed_at }
+  cloud_costs { bigint id PK bigint resource_fk FK date period_start numeric amount }
+  recommendations { bigint id PK bigint resource_fk FK numeric monthly_saving numeric priority_score }
+  optimization_simulations { bigint id PK bigint resource_fk FK numeric before_cost numeric predicted_cost }

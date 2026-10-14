@@ -1,0 +1,256 @@
+{
+  "development": {
+    "seed": 2026,
+    "rows": 3390,
+    "resources": 20,
+    "scenario_types": [
+      "gradual_cost_increase",
+      "highly_utilized",
+      "idle",
+      "newly_deployed",
+      "normal",
+      "occasional_peak",
+      "over_provisioned",
+      "seasonal_usage",
+      "sudden_cost_spike",
+      "underutilized"
+    ]
+  },
+  "held_out": {
+    "seed": 106755,
+    "scenario_offset": 4,
+    "rows": 3390,
+    "resources": 20,
+    "scenario_types": [
+      "gradual_cost_increase",
+      "highly_utilized",
+      "idle",
+      "newly_deployed",
+      "normal",
+      "occasional_peak",
+      "over_provisioned",
+      "seasonal_usage",
+      "sudden_cost_spike",
+      "underutilized"
+    ]
+  },
+  "forecast": {
+    "model": "Random Forest lag-feature model",
+    "next_day": 23753.57,
+    "next_week": 173464.16,
+    "next_month": 786511.27,
+    "metrics": {
+      "mae": 2091.12,
+      "rmse": 4813.77,
+      "mape_pct": 7.57,
+      "r2": -0.092
+    },
+    "seasonal_naive_baseline_metrics": {
+      "mae": 2199.49,
+      "rmse": 5077.9,
+      "mape_pct": 7.94,
+      "r2": -0.215,
+      "model": "seasonal naive (previous week cost)"
+    },
+    "validation_selection": {
+      "method": "lowest MAE on a chronological validation tail within the training window",
+      "selected": "Random Forest lag-feature model",
+      "validation_mae": 775.82,
+      "test_window_is_not_used_for_selection": true
+    },
+    "model_comparison": [
+      {
+        "model": "seasonal_naive_7d",
+        "mae": 2199.49,
+        "rmse": 5077.9,
+        "mape_pct": 7.94,
+        "r2": -0.215,
+        "validation_mae": 905.32
+      },
+      {
+        "model": "weekday_median_4w",
+        "mae": 1961.92,
+        "rmse": 4892.9,
+        "mape_pct": 6.77,
+        "r2": -0.128,
+        "validation_mae": 823.71
+      },
+      {
+        "model": "random_forest_lags",
+        "mae": 2091.12,
+        "rmse": 4813.77,
+        "mape_pct": 7.57,
+        "r2": -0.092,
+        "validation_mae": 775.82
+      }
+    ],
+    "evaluation_limit": "Synthetic or uploaded historical data backtests do not guarantee future cloud expenditure."
+  },
+  "anomaly": {
+    "detector": "Isolation Forest OR 4\u00d7 rolling-MAD cost rule",
+    "precision": 0.194,
+    "recall": 1.0,
+    "f1": 0.324,
+    "false_positive_rate": 0.035,
+    "isolation_forest": {
+      "precision": 0.333,
+      "recall": 0.167,
+      "f1": 0.222,
+      "false_positive_rate": 0.003,
+      "predicted_rows": 3
+    },
+    "rolling_mad_baseline": {
+      "precision": 0.194,
+      "recall": 1.0,
+      "f1": 0.324,
+      "false_positive_rate": 0.035
+    },
+    "hybrid_iforest_or_rolling_mad": {
+      "precision": 0.194,
+      "recall": 1.0,
+      "f1": 0.324,
+      "false_positive_rate": 0.035,
+      "predicted_rows": 31,
+      "rule": "Isolation Forest OR a 4\u00d7 trailing rolling-MAD cost deviation; both use prior observations only."
+    },
+    "ground_truth_positive_rows": 6,
+    "predicted_outlier_rows": 31,
+    "holdout_rows": 720,
+    "holdout_start": "2026-09-02T00:00:00+00:00",
+    "label_source": "synthetic is_anomaly evaluation label; excluded from model inputs",
+    "evaluation_limit": "Controlled synthetic labels do not establish production performance."
+  },
+  "optimization": {
+    "resources_evaluated": 20,
+    "recommended_resources": 8,
+    "labelled_opportunity_resources": 6,
+    "recommendation_precision_against_synthetic_labels": 0.75,
+    "false_recommendation_rate": 0.25,
+    "feasible_action_count": 15,
+    "rejected_option_count": 22,
+    "infeasible_option_rate": 0.595,
+    "post_gate_performance_violations": 0,
+    "monthly_saving_potential_non_overlapping": 17467.92,
+    "mean_selected_heuristic_risk_score": 44.04,
+    "warning": "Opportunity labels are scenario-derived; feasibility and zero post-gate violations follow the implemented hard constraints and do not prove production accuracy."
+  },
+  "ranking": {
+    "candidate_count": 15,
+    "savings_only_top": [
+      {
+        "cloud_provider": "Azure",
+        "resource_id": "AZURE-104",
+        "action": "Schedule non-business shutdown",
+        "estimated_monthly_saving": 8461.09,
+        "risk": "MEDIUM",
+        "risk_score": 62.1,
+        "confidence": 0.646,
+        "savings_only_rank": 1,
+        "risk_aware_rank": 9
+      },
+      {
+        "cloud_provider": "AWS",
+        "resource_id": "EC2-118",
+        "action": "Right-size storage to 260GB",
+        "estimated_monthly_saving": 5420.66,
+        "risk": "MEDIUM",
+        "risk_score": 51.8,
+        "confidence": 0.812,
+        "savings_only_rank": 2,
+        "risk_aware_rank": 1
+      },
+      {
+        "cloud_provider": "GCP",
+        "resource_id": "CLOUD-114",
+        "action": "Downsize to e2-standard-2",
+        "estimated_monthly_saving": 5277.0,
+        "risk": "HIGH",
+        "risk_score": 79.6,
+        "confidence": 0.858,
+        "savings_only_rank": 3,
+        "risk_aware_rank": 15
+      },
+      {
+        "cloud_provider": "Azure",
+        "resource_id": "AZURE-119",
+        "action": "Right-size storage to 460GB",
+        "estimated_monthly_saving": 4279.47,
+        "risk": "MEDIUM",
+        "risk_score": 45.5,
+        "confidence": 0.886,
+        "savings_only_rank": 4,
+        "risk_aware_rank": 2
+      },
+      {
+        "cloud_provider": "Azure",
+        "resource_id": "MANAGED-107",
+        "action": "Right-size storage to 160GB",
+        "estimated_monthly_saving": 2640.55,
+        "risk": "MEDIUM",
+        "risk_score": 47.0,
+        "confidence": 0.862,
+        "savings_only_rank": 5,
+        "risk_aware_rank": 4
+      }
+    ],
+    "risk_aware_top": [
+      {
+        "cloud_provider": "AWS",
+        "resource_id": "EC2-118",
+        "action": "Right-size storage to 260GB",
+        "estimated_monthly_saving": 5420.66,
+        "risk": "MEDIUM",
+        "risk_score": 51.8,
+        "confidence": 0.812,
+        "savings_only_rank": 2,
+        "risk_aware_rank": 1
+      },
+      {
+        "cloud_provider": "Azure",
+        "resource_id": "AZURE-119",
+        "action": "Right-size storage to 460GB",
+        "estimated_monthly_saving": 4279.47,
+        "risk": "MEDIUM",
+        "risk_score": 45.5,
+        "confidence": 0.886,
+        "savings_only_rank": 4,
+        "risk_aware_rank": 2
+      },
+      {
+        "cloud_provider": "GCP",
+        "resource_id": "PERSISTENT-108",
+        "action": "Right-size storage to 40GB",
+        "estimated_monthly_saving": 415.43,
+        "risk": "LOW",
+        "risk_score": 34.8,
+        "confidence": 0.817,
+        "savings_only_rank": 12,
+        "risk_aware_rank": 3
+      },
+      {
+        "cloud_provider": "Azure",
+        "resource_id": "MANAGED-107",
+        "action": "Right-size storage to 160GB",
+        "estimated_monthly_saving": 2640.55,
+        "risk": "MEDIUM",
+        "risk_score": 47.0,
+        "confidence": 0.862,
+        "savings_only_rank": 5,
+        "risk_aware_rank": 4
+      },
+      {
+        "cloud_provider": "AWS",
+        "resource_id": "EC2-109",
+        "action": "Right-size storage to 220GB",
+        "estimated_monthly_saving": 2080.22,
+        "risk": "MEDIUM",
+        "risk_score": 44.1,
+        "confidence": 0.887,
+        "savings_only_rank": 7,
+        "risk_aware_rank": 5
+      }
+    ],
+    "same_candidate_set": true
+  },
+  "evaluation_limit": "Synthetic scenario results validate mechanics only. They do not establish production model accuracy or realized savings."
+}

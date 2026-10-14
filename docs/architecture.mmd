@@ -1,0 +1,17 @@
+flowchart LR
+  A[CSV imports / seeded generator] --> B[FastAPI ingestion + Pandas ETL]
+  B --> C[(PostgreSQL resources, usage, costs, decisions)]
+  B --> D[Shared cleaned DataFrame]
+  D --> E[Analytics + time-series forecast]
+  D --> F[Isolation Forest + measured root cause]
+  D --> G[Catalog-backed recommendation engine]
+  G --> H[What-if action alternatives]
+  H --> I[Constraint gate + evidence/risk scoring]
+  E --> J[FastAPI]
+  F --> J
+  I --> J
+  J --> K[React dashboard]
+  J --> L[Structured analytics copilot]
+  M[Local FinOps Markdown guidance] --> N[TF-IDF retrieval]
+  N --> L
+  O[AWS CUR / Azure / GCP connectors] -. future .-> B

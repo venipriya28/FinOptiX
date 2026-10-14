@@ -1,0 +1,45 @@
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      FINOPTIX_DATA: /app/data/demo_usage.csv
+      FINOPTIX_CATALOG: /app/catalog/pricing_catalog.json
+      FINOPTIX_DATABASE_URL: postgresql://finoptix:${POSTGRES_PASSWORD:-local-demo-only}@db:5432/finoptix
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports: ["5173:80"]
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/healthz"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: finoptix
+      POSTGRES_USER: finoptix
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-demo-only}
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data", "./sql/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finoptix -d finoptix"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+volumes:
+  pgdata:

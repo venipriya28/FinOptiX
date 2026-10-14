@@ -1,0 +1,82 @@
+{
+  "catalog_version": "2026.10-demo-1",
+  "currency": "INR",
+  "price_source": "illustrative_assumption",
+  "market_price_claim": false,
+  "disclaimer": "Synthetic planning rates for a student demonstration. They are not current provider quotes and must never be used for purchasing decisions.",
+  "billing": {
+    "compute_unit": "per running hour, prorated; no commitment discounts, taxes, credits, or minimum purchase term",
+    "monthly_projection_days": 30,
+    "hours_per_day": 24,
+    "utilization_cost_multiplier": {"base": 0.88, "per_utilization_fraction": 0.24},
+    "storage_unit": "provisioned GB-month with a small usage-sensitive I/O surcharge",
+    "storage_io_surcharge_per_usage_fraction": 0.15,
+    "network_free_gb_per_month": 100,
+    "shutdown": {
+      "eligible_environments": ["development", "test"],
+      "eligible_hours_per_day": 8,
+      "window": "22:00-06:00 local; daily aggregate data cannot verify this window",
+      "minimum_runtime_hours_per_day": 8,
+      "requires_hourly_schedule_evidence": false,
+      "daily_aggregate_evidence_reliability": "LOW"
+    },
+    "storage": {"minimum_capacity_gb": 20, "capacity_increment_gb": 20, "headroom_fraction": 0.25, "minimum_days": 30}
+  },
+  "risk": {
+    "max_p95_cpu_pct": 85,
+    "max_p95_memory_pct": 90,
+    "weights": {"performance_constraint": 0.5, "workload_variability": 0.25, "resource_criticality": 0.25},
+    "class_thresholds": {"low_max": 34.9, "medium_max": 64.9},
+    "criticality_by_environment": {"production": 1.0, "staging": 0.65, "development": 0.35, "test": 0.25, "unknown": 0.8}
+  },
+  "confidence": {
+    "minimum_observations": 30,
+    "target_observations": 90,
+    "minimum_coverage": 0.8,
+    "weights": {"observation_volume": 0.2, "coverage": 0.2, "stability": 0.15, "recommendation_consistency": 0.15, "peak_metrics": 0.15, "price_reliability": 0.15},
+    "illustrative_price_reliability": 0.55,
+    "verified_price_reliability": 1.0
+  },
+  "objective": {"weights": {"savings_fraction": 0.45, "evidence_quality": 0.1, "risk_penalty": 0.45}, "risk_aversion": "weighted score; quadratic risk penalty gives greater separation to high-risk choices; infeasible or insufficient-evidence choices are not ranked"},
+  "providers": {
+    "AWS": {
+      "regions": {"ap-south-1": 1.0, "us-east-1": 1.08, "eu-west-1": 1.10},
+      "services": ["EC2", "RDS", "EBS"],
+      "compute_services": ["EC2", "RDS"],
+      "compute_skus": {
+        "t3.medium": {"vcpu": 2, "memory_gib": 4, "hourly_inr": 4.5, "next_smaller": []},
+        "m5.xlarge": {"vcpu": 4, "memory_gib": 16, "hourly_inr": 14.2, "next_smaller": ["t3.medium"]},
+        "m5.2xlarge": {"vcpu": 8, "memory_gib": 32, "hourly_inr": 28.4, "next_smaller": ["m5.xlarge", "t3.medium"]}
+      },
+      "storage_inr_per_gb_month": 7.2,
+      "network_inr_per_gb": 6.8,
+      "network_free_gb_per_month": 100
+    },
+    "Azure": {
+      "regions": {"centralindia": 0.96, "eastus": 1.04, "westeurope": 1.08},
+      "services": ["Azure VM", "Azure SQL", "Managed Disk"],
+      "compute_services": ["Azure VM", "Azure SQL"],
+      "compute_skus": {
+        "Standard_D2s_v5": {"vcpu": 2, "memory_gib": 8, "hourly_inr": 10.1, "next_smaller": []},
+        "Standard_D4s_v5": {"vcpu": 4, "memory_gib": 16, "hourly_inr": 20.2, "next_smaller": ["Standard_D2s_v5"]},
+        "Standard_D8s_v5": {"vcpu": 8, "memory_gib": 32, "hourly_inr": 40.4, "next_smaller": ["Standard_D4s_v5", "Standard_D2s_v5"]}
+      },
+      "storage_inr_per_gb_month": 7.6,
+      "network_inr_per_gb": 6.5,
+      "network_free_gb_per_month": 100
+    },
+    "GCP": {
+      "regions": {"asia-south1": 0.93, "us-central1": 1.0, "europe-west1": 1.05},
+      "services": ["Compute Engine", "Cloud SQL", "Persistent Disk"],
+      "compute_services": ["Compute Engine", "Cloud SQL"],
+      "compute_skus": {
+        "e2-standard-2": {"vcpu": 2, "memory_gib": 8, "hourly_inr": 8.3, "next_smaller": []},
+        "n2-standard-4": {"vcpu": 4, "memory_gib": 16, "hourly_inr": 19.6, "next_smaller": ["e2-standard-2"]},
+        "n2-standard-8": {"vcpu": 8, "memory_gib": 32, "hourly_inr": 39.2, "next_smaller": ["n2-standard-4", "e2-standard-2"]}
+      },
+      "storage_inr_per_gb_month": 6.8,
+      "network_inr_per_gb": 6.2,
+      "network_free_gb_per_month": 100
+    }
+  }
+}
